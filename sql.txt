@@ -1,0 +1,25 @@
+SELECT name FROM sqlite_master WHERE type='table'; // sprawdzenie dostępnych tabel - SQLIte
+
+
+CREATE TABLE players (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(50) NOT NULL,
+    chances INT DEFAULT 3,
+    score INT DEFAULT 0
+);
+
+INSERT INTO players (name) VALUES ('Jan');
+INSERT INTO players (name) VALUES ('Anna');
+
+SELECT * FROM players;
+
+
+CREATE TABLE questions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    question TEXT NOT NULL
+);
+
+INSERT INTO questions (question) VALUES ('Pytanie1');
+INSERT INTO questions (question) VALUES ('Pytanie2');
+
+SELECT * FROM questions;
