@@ -19,14 +19,13 @@ function showPlayers() {
             nameDiv.classList.add('name');
 
             const idDiv = document.createElement('div');
-            idDiv.textContent = player.id;
+            idDiv.textContent = player.score;
             idDiv.classList.add('id');
 
             // Dodajemy te elementy do kontenera gracza
             playerContainer.appendChild(chancesDiv);
             playerContainer.appendChild(nameDiv);
             playerContainer.appendChild(idDiv);
-
 
             // Dodajemy kontener gracza do głównej listy
             playersList.appendChild(playerContainer);
@@ -37,4 +36,25 @@ function showPlayers() {
 }
 
 // Wywołujemy funkcję po załadowaniu strony
-document.addEventListener('DOMContentLoaded', showPlayers);
+document.addEventListener('DOMContentLoaded', () => {
+    showPlayers(); // Wczytanie graczy
+
+    // Obsługa przycisku - demo!!!
+    const buttonCorrect = document.getElementById('button-correct');
+    if (buttonCorrect) {
+        buttonCorrect.addEventListener("click", () => {
+            console.log("Przycisk został kliknięty!");
+            addPoints(1);  // Przekazanie ID gracza (na razie na sztywno)
+        });
+    }
+});
+
+
+// Funkcja do dodawania punktów
+function addPoints(playerId) {
+    let pointsNumber = 10;
+    window.electron.addPoints(playerId, pointsNumber) // dodajemy punkty
+        .then(() => showPlayers()) // odświeżamy listę
+        .catch(error => console.error('Błąd', error));
+
+}

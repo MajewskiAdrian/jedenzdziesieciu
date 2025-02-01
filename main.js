@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
-const sqlite3 = require('better-sqlite3');  // Nie używamy .verbose()
-const mysql = require('mysql2/promise'); // TEMP!!!
+const sqlite3 = require('better-sqlite3');
+const mysql = require('mysql2/promise'); 
 const path = require('path');
 
 // Tworzymy okno aplikacji
@@ -46,6 +46,28 @@ ipcMain.handle('get-players', () => {
     const rows = db.prepare('SELECT * FROM players').all();  // Używamy metody .prepare().all() dla lepszej wydajności
     return rows;  // Zwracamy dane użytkowników
 });
+
+// Aktualizacja bazy - zmiana punktów - SQLite
+ipcMain.handle('add-points', (event, playerId, points) => {
+    const db = new sqlite3('jedenzdziesieciu.db');  // Łączenie z bazą danych
+    return new Promise((resolve, reject) => {
+        const query = 'UPDATE players SET score = score + ? WHERE id = ?';
+        
+        try {
+            const stmt = db.prepare(query);  // Przygotowujemy zapytanie
+            const result = stmt.run(points, playerId);  // Uruchamiamy zapytanie
+
+            if (result.changes > 0) {
+                resolve(true);  // Jeśli zmieniono rekordy, zwracamy sukces
+            } else {
+                reject('Brak gracza o tym ID lub brak zmian.');
+            }
+        } catch (err) {
+            reject(err);  // Zwracamy błąd, jeśli wystąpił problem
+        }
+    });
+});
+
 // SQLITE - KONIEC
 //*/
 
