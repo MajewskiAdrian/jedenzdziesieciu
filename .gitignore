@@ -1,0 +1,21 @@
+# Node.js
+node_modules/
+
+# Electron
+dist/
+build/
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Visual Studio Code
+.vscode/
+
+# Ignorowanie plików logów
+*.log
+
+# Ignorowanie plików konfiguracyjnych środowiska
+.env
