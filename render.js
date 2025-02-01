@@ -44,16 +44,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (buttonCorrect) {
         buttonCorrect.addEventListener("click", () => {
             console.log("Przycisk został kliknięty!");
-            addPoints(1);  // Przekazanie ID gracza (na razie na sztywno)
+            correctAnwser(1);  // Przekazanie ID gracza (na razie na sztywno)
         });
     }
 });
 
 
-// Funkcja do dodawania punktów
-function addPoints(playerId) {
+// Funkcja po poprawnej odpowiedzi
+function correctAnwser(playerId) {
     let pointsNumber = 10;
-    window.electron.addPoints(playerId, pointsNumber) // dodajemy punkty
+    window.electron.correctAnwser(playerId, pointsNumber) // dodajemy punkty
         .then(() => showPlayers()) // odświeżamy listę
         .catch(error => console.error('Błąd', error));
 
