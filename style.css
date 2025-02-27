@@ -13,6 +13,7 @@ body {
     background-color: var(--bg-color);
     color: #ddddddc2;
     align-content: baseline;
+    text-align: center;
 }
 
 h1 {
@@ -23,28 +24,43 @@ h1 {
 
 #players-list {
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .player-container {
-    width: 20%;
-    height: 15%;
-    margin: 20px;
-    padding: 10px;
+    width: calc(19% - 20px); /* 5 elementów w jednym rzędzie*/
+    margin: 10px; 
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
     border-radius: 30px;
     background-color: var(--player-container-bg);
     color: var(--player-container-text);
-    align-content: center;
+    display: flex;
+    flex-direction: column;   
+    justify-content: center;
 }
 
 .player-container div {
-    margin: 10px auto;
     text-align: center;
+    justify-content: center;
 }
 
 .chances {
     font-size: 25px;
     font-weight: bold;
+    color: rgb(251, 255, 0);
+    background-color: rgb(251, 255, 0);
+    width: 50px;
+    height: 50px;
+    margin-left: 5px;
+    margin-right: 5px;
+    justify-content: center;
+}
+
+.chances-container {
+    display: flex;
+    text-align: center;
 }
 
 .name {

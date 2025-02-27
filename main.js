@@ -5,8 +5,16 @@ const path = require('path');
 
 // Tworzymy okno aplikacji
 let win;
-
 // MYSQL - POCZĄTEK 
+
+const dba = mysql.createConnection({
+    host: 'localhost', // Adres hosta (np. '127.0.0.1' lub 'localhost')
+    user: 'root',      // Użytkownik MySQL
+    password: '',      // Hasło do bazy (pozostaw pusty string, jeśli brak hasła)
+    database: '1z10' // Nazwa bazy danych
+  });
+
+
 /*
 // Tworzenie puli połączeń do MySQL
 const pool = mysql.createPool({
@@ -39,35 +47,88 @@ ipcMain.handle('get-players', async () => {
 // SQLITE - POCZĄTEK
 ///*
 // Odbieramy zapytanie z frontendu (odczyt danych z bazy) - w SQLite
-ipcMain.handle('get-players', () => {
-    const db = new sqlite3('jedenzdziesieciu.db');  // Łączenie z bazą danych
+ipcMain.handle('get-players', async () => {
+    // Tworzymy połączenie z bazą danych MySQL
+    const connection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',           // Zmień na swoją nazwę użytkownika
+        password: '',   // Zmień na swoje hasło
+        database: '1z10'  // Nazwa bazy danych
+    });
 
-    // Zapytanie do bazy danych, aby pobrać wszystkich użytkowników
-    const rows = db.prepare('SELECT * FROM players').all();  // Używamy metody .prepare().all() dla lepszej wydajności
-    return rows;  // Zwracamy dane użytkowników
+    try {
+        // Wykonujemy zapytanie SELECT, aby pobrać wszystkich graczy
+        const [rows, fields] = await connection.execute('SELECT * FROM players');
+
+        // Zwracamy dane graczy
+        return rows;
+    } catch (err) {
+        console.error('Błąd podczas pobierania graczy:', err);
+        throw err;
+    } finally {
+        // Zamykanie połączenia
+        await connection.end();
+    }
 });
 
 // Aktualizacja bazy - zmiana punktów - SQLite
-ipcMain.handle('add-points', (event, playerId, points) => {
-    const db = new sqlite3('jedenzdziesieciu.db');  // Łączenie z bazą danych
-    return new Promise((resolve, reject) => {
+// Aktualizacja punktów
+ipcMain.handle('add-points', async (event, playerId, points) => {
+    // Tworzymy połączenie z bazą danych MySQL
+    const connection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',           // Zmień na swoją nazwę użytkownika
+        password: '',   // Zmień na swoje hasło
+        database: '1z10'  // Nazwa bazy danych
+    });
+
+    try {
         const query = 'UPDATE players SET score = score + ? WHERE id = ?';
         
-        try {
-            const stmt = db.prepare(query);  // Przygotowujemy zapytanie
-            const result = stmt.run(points, playerId);  // Uruchamiamy zapytanie
+        // Wykonujemy zapytanie UPDATE
+        const [result] = await connection.execute(query, [points, playerId]);
 
-            if (result.changes > 0) {
-                resolve(true);  // Jeśli zmieniono rekordy, zwracamy sukces
-            } else {
-                reject('Brak gracza o tym ID lub brak zmian.');
-            }
-        } catch (err) {
-            reject(err);  // Zwracamy błąd, jeśli wystąpił problem
+        if (result.affectedRows > 0) {
+            return true;  // Jeśli zmieniono rekordy, zwracamy sukces
+        } else {
+            throw new Error('Brak gracza o tym ID lub brak zmian.');
         }
-    });
+    } catch (err) {
+        console.error('Błąd przy aktualizacji punktów:', err);
+        throw err;  // Zwracamy błąd
+    } finally {
+        // Zamykanie połączenia
+        await connection.end();
+    }
 });
 
+ipcMain.handle('subtract-chances', async (event, playerId, points) => {
+    // Tworzymy połączenie z bazą danych MySQL
+    const connection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',           // Zmień na swoją nazwę użytkownika
+        password: '',   // Zmień na swoje hasło
+        database: '1z10'  // Nazwa bazy danych
+    });
+    try {
+        const query = 'UPDATE players SET chances = chances - ? WHERE id = ?';
+        
+        // Wykonujemy zapytanie UPDATE
+        const [result] = await connection.execute(query, [points, playerId]);
+
+        if (result.affectedRows > 0) {
+            return true;  // Jeśli zmieniono rekordy, zwracamy sukces
+        } else {
+            throw new Error('Brak gracza o tym ID lub brak zmian.');
+        }
+    } catch (err) {
+        console.error('Błąd przy aktualizacji punktów:', err);
+        throw err;  // Zwracamy błąd
+    } finally {
+        // Zamykanie połączenia
+        await connection.end();
+    }
+});
 // SQLITE - KONIEC
 //*/
 
