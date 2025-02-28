@@ -1,23 +1,74 @@
+:root {
+    --bg-color: #1E1E1E;
+    --player-container-bg: #002855;
+    --player-container-text: #FFFFFF;
+    --player-container-chances: #CCDD77;
+}
+
 * {
     font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
-    background-color: #1a1a1a;
+    background-color: var(--bg-color);
     color: #ddddddc2;
     align-content: baseline;
+    text-align: center;
 }
 
 h1 {
-    margin-left: 20px;
+    font-size: 40px;
+    margin-top: 20px;
+    text-align: center;
 }
 
-div {
-    background-color: #f0f8ffb9;
-    color: #1a1a1a;
-    padding: 20px;
-    margin: 50px;
-    width: fit-content;
-    float: left;
-    font-weight: 550;
+#players-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.player-container {
+    width: calc(19% - 20px); /* 5 elementów w jednym rzędzie*/
+    margin: 10px; 
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    border-radius: 30px;
+    background-color: var(--player-container-bg);
+    color: var(--player-container-text);
+    display: flex;
+    flex-direction: column;   
+    justify-content: center;
+}
+
+.player-container div {
+    text-align: center;
+    justify-content: center;
+}
+
+.chances {
+    font-size: 25px;
+    font-weight: bold;
+    color: rgb(251, 255, 0);
+    background-color: rgb(251, 255, 0);
+    width: 50px;
+    height: 50px;
+    margin-left: 5px;
+    margin-right: 5px;
+    justify-content: center;
+}
+
+.chances-container {
+    display: flex;
+    text-align: center;
+}
+
+.name {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.id {
+    font-size: 40px;
+    font-weight: bolder;
 }
