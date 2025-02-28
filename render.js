@@ -81,6 +81,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    const buttonReset = document.getElementById('button-reset');
+    if (buttonReset) {
+        buttonReset.addEventListener("click", () => {
+            console.log("Reset");
+            reset();
+        });
+    }
 });
 
 // Funkcja po poprawnej odpowiedzi
@@ -95,5 +103,11 @@ function wrongAnwser(playerId) {
     let pointsNumber = 1;
     window.electron.wrongAnwser(playerId, pointsNumber) // dodajemy punkty
         .then(() => showPlayers()) // odświeżamy listę
+        .catch(error => console.error('Błąd', error));
+}
+
+function reset() {
+    window.electron.reset() 
+        .then(() => showPlayers())
         .catch(error => console.error('Błąd', error));
 }

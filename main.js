@@ -128,6 +128,30 @@ ipcMain.handle('subtract-chances', async (event, playerId, points) => {
     }
 });
 
+ipcMain.handle('reset', async () => {
+    // Tworzymy połączenie z bazą danych MySQL
+    const connection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',           // Zmień na swoją nazwę użytkownika
+        password: '',   // Zmień na swoje hasło
+        database: '1z10'  // Nazwa bazy danych
+    });
+
+    try {
+        const query = 'UPDATE players SET score = 0, chances = 3;';
+        
+        // Wykonujemy zapytanie UPDATE
+        const [result] = await connection.execute(query);
+
+        return result.affectedRows > 0; // Zwraca true, jeśli rekordy zostały zaktualizowane
+    } catch (err) {
+        console.error('Błąd przy resetowaniu danych:', err);
+        throw err;  // Zwracamy błąd
+    } finally {
+        // Zamykanie połączenia
+        await connection.end();
+    }
+});
 
 function createWindow() {
     win = new BrowserWindow({
