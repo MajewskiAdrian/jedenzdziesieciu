@@ -36,7 +36,14 @@ function showPlayers() {
             idDiv.classList.add('id'); // dodanie klasy do ID
             playerContainer.appendChild(idDiv);  // Dodajemy do kontenera
 
-            // Dodajemy kontener gracza (z szansami, nazwą, i ID) do głównej listy
+            const playerRadio = document.createElement('input');
+            playerRadio.type = 'radio';
+            playerRadio.name = 'playerSelection'; // Grupa radio buttonów
+            playerRadio.value = player.id; // Przypisanie ID gracza
+            playerRadio.classList.add('player-radio');
+            playerContainer.appendChild(playerRadio);
+
+            // Dodajemy kontener gracza (z szansami, nazwą, ID i przyciskiem) do głównej listy
             playersList.appendChild(playerContainer);
         });
     }).catch(error => {
@@ -53,16 +60,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const buttonCorrect = document.getElementById('button-correct');
     if (buttonCorrect) {
         buttonCorrect.addEventListener("click", () => {
-            console.log("Przycisk został kliknięty!");
-            correctAnwser(1);  // Przekazanie ID gracza (na razie na sztywno)
+            const selectedPlayer = document.querySelector('input[name="playerSelection"]:checked');
+            if (selectedPlayer) {
+                correctAnwser(selectedPlayer.value);  // Przekazanie ID gracza
+            } else {
+                console.log("Wybierz uczestnika!")
+            }
+            
         });
     }
 
     const buttonWrong = document.getElementById('button-wrong');
     if (buttonWrong) {
         buttonWrong.addEventListener("click", () => {
-            console.log("Przycisk został kliknięty!");
-            wrongAnwser(1);  // Przekazanie ID gracza (na razie na sztywno)
+            const selectedPlayer = document.querySelector('input[name="playerSelection"]:checked');
+            if (selectedPlayer) {
+                wrongAnwser(selectedPlayer.value);  // Przekazanie ID gracza
+            } else {
+                console.log("Wybierz uczestnika!")
+            }
         });
     }
 });
