@@ -44,9 +44,7 @@ ipcMain.handle('get-players', async () => {
 });
 // MYSQL - KONIEC
 */
-// SQLITE - POCZĄTEK
-///*
-// Odbieramy zapytanie z frontendu (odczyt danych z bazy) - w SQLite
+
 ipcMain.handle('get-players', async () => {
     // Tworzymy połączenie z bazą danych MySQL
     const connection = await mysql.createConnection({
@@ -71,7 +69,7 @@ ipcMain.handle('get-players', async () => {
     }
 });
 
-// Aktualizacja bazy - zmiana punktów - SQLite
+
 // Aktualizacja punktów
 ipcMain.handle('add-points', async (event, playerId, points) => {
     // Tworzymy połączenie z bazą danych MySQL
@@ -129,8 +127,7 @@ ipcMain.handle('subtract-chances', async (event, playerId, points) => {
         await connection.end();
     }
 });
-// SQLITE - KONIEC
-//*/
+
 
 function createWindow() {
     win = new BrowserWindow({
