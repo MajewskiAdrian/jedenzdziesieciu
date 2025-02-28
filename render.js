@@ -14,7 +14,7 @@ function showPlayers() {
             const chancesContainer = document.createElement('div');
             chancesContainer.classList.add('chances-container'); // Dodajemy klasę dla flexboxa
             
-            // Tworzymy tyle divów, ile gracz ma żyć
+            // Tworzymy tyle divów, ile gracz ma szans
             for (let i = 0; i < player.chances; i++) {
                 const chancesDiv = document.createElement('div');
                 chancesDiv.classList.add('chances'); // dodanie klasy do każdej szansy
@@ -36,7 +36,35 @@ function showPlayers() {
             idDiv.classList.add('id'); // dodanie klasy do ID
             playerContainer.appendChild(idDiv);  // Dodajemy do kontenera
 
-            // Dodajemy kontener gracza (z szansami, nazwą, i ID) do głównej listy
+            const playerRadio = document.createElement('input');
+            playerRadio.type = 'radio';
+            playerRadio.name = 'playerSelection'; // Grupa radio buttonów
+            playerRadio.value = player.id; // Przypisanie ID gracza
+            playerRadio.classList.add('player-radio');
+            playerContainer.appendChild(playerRadio);
+
+            // Dodajemy zdarzenie kliknięcia na player-container
+            playerContainer.addEventListener('click', () => {
+                // Odznaczamy wszystkie inne radiobuttony
+                const allRadios = document.querySelectorAll('input[name="playerSelection"]');
+                allRadios.forEach(radio => {
+                    radio.checked = false;  // Odznaczamy inne radio
+                });
+
+                // Zaznaczamy bieżący radiobutton
+                playerRadio.checked = true;
+
+                // Dodajemy lub usuwamy klasę .selected
+                const allContainers = document.querySelectorAll('.player-container');
+                allContainers.forEach(container => {
+                    container.classList.remove('selected');  // Usuwamy klasę z innych kontenerów
+                });
+
+                // Dodajemy klasę .selected do klikniętego kontenera
+                playerContainer.classList.add('selected');
+            });
+
+            // Dodajemy kontener gracza (z szansami, nazwą, ID i przyciskiem) do głównej listy
             playersList.appendChild(playerContainer);
         });
     }).catch(error => {
@@ -53,16 +81,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const buttonCorrect = document.getElementById('button-correct');
     if (buttonCorrect) {
         buttonCorrect.addEventListener("click", () => {
-            console.log("Przycisk został kliknięty!");
-            correctAnwser(1);  // Przekazanie ID gracza (na razie na sztywno)
+            const selectedPlayer = document.querySelector('input[name="playerSelection"]:checked');
+            if (selectedPlayer) {
+                correctAnwser(selectedPlayer.value);  // Przekazanie ID gracza
+            } else {
+                console.log("Wybierz uczestnika!")
+            }
+            
         });
     }
 
     const buttonWrong = document.getElementById('button-wrong');
     if (buttonWrong) {
         buttonWrong.addEventListener("click", () => {
-            console.log("Przycisk został kliknięty!");
-            wrongAnwser(1);  // Przekazanie ID gracza (na razie na sztywno)
+            const selectedPlayer = document.querySelector('input[name="playerSelection"]:checked');
+            if (selectedPlayer) {
+                wrongAnwser(selectedPlayer.value);  // Przekazanie ID gracza
+            } else {
+                console.log("Wybierz uczestnika!")
+            }
+        });
+    }
+
+    const buttonReset = document.getElementById('button-reset');
+    if (buttonReset) {
+        buttonReset.addEventListener("click", () => {
+            console.log("Reset");
+            reset();
         });
     }
 });
@@ -79,5 +124,11 @@ function wrongAnwser(playerId) {
     let pointsNumber = 1;
     window.electron.wrongAnwser(playerId, pointsNumber) // dodajemy punkty
         .then(() => showPlayers()) // odświeżamy listę
+        .catch(error => console.error('Błąd', error));
+}
+
+function reset() {
+    window.electron.reset() 
+        .then(() => showPlayers())
         .catch(error => console.error('Błąd', error));
 }

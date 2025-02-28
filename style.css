@@ -25,10 +25,12 @@ h1 {
 #players-list {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
 }
 
 .player-container {
-    width: calc(19% - 20px); /* 5 elementów w jednym rzędzie*/
+    width: 17%; /* 5 elementów w jednym rzędzie*/
     margin: 10px; 
     padding-left: 10px;
     padding-right: 10px;
@@ -39,6 +41,13 @@ h1 {
     display: flex;
     flex-direction: column;   
     justify-content: center;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.player-container.selected {
+    background-color: #003A7A;  /* Zmiana koloru tła, kiedy radio jest zaznaczone */
+    box-shadow: 0px 0px 30px 0px #d0d0d0;
 }
 
 .player-container div {
@@ -49,8 +58,8 @@ h1 {
 .chances {
     font-size: 25px;
     font-weight: bold;
-    color: rgb(251, 255, 0);
-    background-color: rgb(251, 255, 0);
+    color: var(--player-container-chances);
+    background-color: var(--player-container-chances);
     width: 50px;
     height: 50px;
     margin-left: 5px;
@@ -71,4 +80,8 @@ h1 {
 .id {
     font-size: 40px;
     font-weight: bolder;
+}
+
+.player-radio {
+    display: none;
 }
