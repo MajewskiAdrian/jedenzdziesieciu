@@ -14,7 +14,7 @@ function showPlayers() {
             const chancesContainer = document.createElement('div');
             chancesContainer.classList.add('chances-container'); // Dodajemy klasę dla flexboxa
             
-            // Tworzymy tyle divów, ile gracz ma żyć
+            // Tworzymy tyle divów, ile gracz ma szans
             for (let i = 0; i < player.chances; i++) {
                 const chancesDiv = document.createElement('div');
                 chancesDiv.classList.add('chances'); // dodanie klasy do każdej szansy
@@ -42,6 +42,27 @@ function showPlayers() {
             playerRadio.value = player.id; // Przypisanie ID gracza
             playerRadio.classList.add('player-radio');
             playerContainer.appendChild(playerRadio);
+
+            // Dodajemy zdarzenie kliknięcia na player-container
+            playerContainer.addEventListener('click', () => {
+                // Odznaczamy wszystkie inne radiobuttony
+                const allRadios = document.querySelectorAll('input[name="playerSelection"]');
+                allRadios.forEach(radio => {
+                    radio.checked = false;  // Odznaczamy inne radio
+                });
+
+                // Zaznaczamy bieżący radiobutton
+                playerRadio.checked = true;
+
+                // Dodajemy lub usuwamy klasę .selected
+                const allContainers = document.querySelectorAll('.player-container');
+                allContainers.forEach(container => {
+                    container.classList.remove('selected');  // Usuwamy klasę z innych kontenerów
+                });
+
+                // Dodajemy klasę .selected do klikniętego kontenera
+                playerContainer.classList.add('selected');
+            });
 
             // Dodajemy kontener gracza (z szansami, nazwą, ID i przyciskiem) do głównej listy
             playersList.appendChild(playerContainer);
