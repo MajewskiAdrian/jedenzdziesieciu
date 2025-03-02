@@ -70,6 +70,29 @@ ipcMain.handle('get-players', async () => {
 });
 
 
+ipcMain.handle('get-questions', async () => {
+    // Tworzymy połączenie z bazą danych MySQL
+    const connection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',           // Zmień na swoją nazwę użytkownika
+        password: '',   // Zmień na swoje hasło
+        database: '1z10'  // Nazwa bazy danych
+    });
+
+    try {
+        const [rows, fields] = await connection.execute('SELECT q.question_number, q.question_text, q.points, a.answer_text FROM questions q JOIN answers a ON q.answer_id = a.id WHERE question_number = 1 AND points = 3;');
+
+        return rows;
+    } catch (err) {
+        console.error('Błąd podczas pobierania pytań:', err);
+        throw err;
+    } finally {
+        // Zamykanie połączenia
+        await connection.end();
+    }
+});
+
+
 // Aktualizacja punktów
 ipcMain.handle('add-points', async (event, playerId, points) => {
     // Tworzymy połączenie z bazą danych MySQL

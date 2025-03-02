@@ -13,7 +13,7 @@ function showPlayers() {
             // Kontener dla szans, wyświetlanych w jednym rzędzie
             const chancesContainer = document.createElement('div');
             chancesContainer.classList.add('chances-container'); // Dodajemy klasę dla flexboxa
-            
+
             // Tworzymy tyle divów, ile gracz ma szans
             for (let i = 0; i < player.chances; i++) {
                 const chancesDiv = document.createElement('div');
@@ -31,10 +31,10 @@ function showPlayers() {
             playerContainer.appendChild(nameDiv);  // Dodajemy do kontenera
 
             // Div dla wyniku gracza
-            const idDiv = document.createElement('div');
-            idDiv.textContent = player.score;
-            idDiv.classList.add('id'); // dodanie klasy do ID
-            playerContainer.appendChild(idDiv);  // Dodajemy do kontenera
+            const questionTextDiv = document.createElement('div');
+            questionTextDiv.textContent = player.score;
+            questionTextDiv.classList.add('id'); // dodanie klasy do ID
+            playerContainer.appendChild(questionTextDiv);  // Dodajemy do kontenera
 
             const playerRadio = document.createElement('input');
             playerRadio.type = 'radio';
@@ -72,11 +72,85 @@ function showPlayers() {
     });
 }
 
+// Funkcja wyświetlająca pytania
+function showQuestions2() {
+    // Wysyłamy zapytanie do backendu po dane pytań
+    window.electron.getQuestions().then(data => {
+        const questionBar = document.getElementById('question-bar');
+        questionBar.innerHTML = '';  // Czyścimy listę
+
+        // Iterujemy przez dane i tworzymy elementy do wyświetlenia
+        data.forEach(question => {
+            const questionContainer = document.createElement('div');
+            questionContainer.classList.add('question-container'); // dodanie klasy do kontenera
+
+            // Div dla numeru pytania
+            const questionNumberDiv = document.createElement('div');
+            questionNumberDiv.textContent = question.question_number;
+            questionNumberDiv.classList.add('question-number');
+            questionContainer.appendChild(questionNumberDiv);  // Dodajemy do kontenera
+
+            // Div dla treści pytania
+            const questionTextDiv = document.createElement('div');
+            questionTextDiv.textContent = question.question_text;
+            questionTextDiv.classList.add('question-text');
+            questionContainer.appendChild(questionTextDiv);  // Dodajemy do kontenera
+
+            // Dodajemy kontener pytań
+            questionBar.appendChild(questionContainer);
+        });
+    }).catch(error => {
+        console.error('Błąd:', error);
+    });
+}
+
+// Funkcja wyświetlająca pytania
+function showQuestions() {
+    // Wysyłamy zapytanie do backendu po dane pytań
+    window.electron.getQuestions().then(data => {
+        
+        // Pobieramy element <tbody> dla tabeli
+        const questionBody = document.getElementById('question-body');
+        questionBody.innerHTML = '';  // Czyścimy listę pytań
+
+        // Iterujemy przez dane i tworzymy wiersze tabeli
+        data.forEach(question => {
+            console.log("Dodaję pytanie:", question); // Debugowanie
+
+            const questionRow = document.createElement('tr');
+
+            // Komórka dla numeru pytania
+            const questionNumberTd = document.createElement('td');
+            questionNumberTd.textContent = question.question_number;
+            questionRow.appendChild(questionNumberTd);
+
+            // Komórka dla treści pytania
+            const questionTextTd = document.createElement('td');
+            questionTextTd.textContent = question.question_text;
+            questionRow.appendChild(questionTextTd);
+
+            // Komórka dla ilości punktów
+            const questionPointsTd = document.createElement('td');
+            questionPointsTd.textContent = question.points;
+            questionRow.appendChild(questionPointsTd);
+
+            // Komórka dla odpowiedzi
+            const questionAnswerTd = document.createElement('td');
+            questionAnswerTd.textContent = question.answer_text;
+            questionRow.appendChild(questionAnswerTd);
+
+            // Dodajemy wiersz do tabeli
+            questionBody.appendChild(questionRow);
+        });
+    }).catch(error => {
+        console.error('Błąd:', error);
+    });
+}
 
 // Wywołujemy funkcję po załadowaniu strony
 document.addEventListener('DOMContentLoaded', () => {
     showPlayers(); // Wczytanie graczy
-
+    showQuestions(); // Wczytanie pytań
     // Obsługa przycisku - demo!!!
     const buttonCorrect = document.getElementById('button-correct');
     if (buttonCorrect) {
@@ -87,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 console.log("Wybierz uczestnika!")
             }
-            
+
         });
     }
 
@@ -128,7 +202,7 @@ function wrongAnwser(playerId) {
 }
 
 function reset() {
-    window.electron.reset() 
+    window.electron.reset()
         .then(() => showPlayers())
         .catch(error => console.error('Błąd', error));
 }

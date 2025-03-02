@@ -13,6 +13,19 @@
     <script src="render.js">// Załadowanie skryptów </script>
     <h1>Lista uczestników:</h1>
     <div id="players-list"></div> <!-- Tutaj będą wyświetlane dane z bazy -->
+    <div id="question-bar"><!-- Tutaj będą wyświetlane pytania z bazy -->
+        <table id="question-table">
+            <thead>
+                <tr>
+                    <th>Numer pytania</th>
+                    <th>Treść</th>
+                    <th>Ilość punktów</th>
+                    <th>Odpowiedź</th>
+                </tr>
+            </thead>
+            <tbody id="question-body"></tbody>
+        </table>
+    </div>
     <div id="controlls">
         <button id="button-correct">Poprawna</button>
         <button id="button-wrong">Błędna</button>
