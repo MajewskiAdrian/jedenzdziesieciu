@@ -6,5 +6,6 @@ contextBridge.exposeInMainWorld('electron', {
     getQuestions: () => ipcRenderer.invoke('get-questions'),
     correctAnwser: (playerId, points) => ipcRenderer.invoke('add-points', playerId, points),
     wrongAnwser: (playerId, points) => ipcRenderer.invoke('subtract-chances', playerId, points),
-    reset: () => ipcRenderer.invoke('reset')
+    reset: () => ipcRenderer.invoke('reset'),
+    updateParticipant: (data) => ipcRenderer.invoke('update-participant', data)
 });
