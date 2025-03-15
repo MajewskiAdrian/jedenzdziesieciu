@@ -83,6 +83,8 @@ function showQuestions() {
         
         // Sprawdzamy, czy dane nie są puste
         if (!data || data.length === 0) {
+            if (questionPoints == 1)
+            questionPoints += 1;
             console.error('Brak danych lub błąd w odpowiedzi');
             return;  // Zatrzymujemy funkcję, nie odświeżamy tabeli
         }
@@ -138,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedPlayer = document.querySelector('input[name="playerSelection"]:checked');
             //const questionNumber = questionNumberTd.value
             if (selectedPlayer) {
-                correctAnwser(selectedPlayer.value);  // Przekazanie ID gracza
+                correctAnwser(selectedPlayer.value, questionPoints);  // Przekazanie ID gracza
                 nextQuestion();
                 console.log("Numer pytania: ", currentQuestionNumber)
             } else {
@@ -200,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Funkcja po poprawnej odpowiedzi
 function correctAnwser(playerId) {
-    let pointsNumber = 10;
+    let pointsNumber = questionPoints;
     window.electron.correctAnwser(playerId, pointsNumber) // dodajemy punkty
         .then(() => showPlayers()) // odświeżamy listę uczestników
         .then(() => showQuestions()) // odświeżamy pytanie
@@ -208,8 +210,7 @@ function correctAnwser(playerId) {
 }
 
 function wrongAnwser(playerId) {
-    let pointsNumber = 1;
-    window.electron.wrongAnwser(playerId, pointsNumber) // odejmujemy szanse
+    window.electron.wrongAnwser(playerId, 1) // odejmujemy szanse
         .then(() => showPlayers()) // odświeżamy listę
         .then(() => showQuestions()) // odświeżamy pytanie
         .catch(error => console.error('Błąd', error));
