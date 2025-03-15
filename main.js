@@ -23,10 +23,13 @@ ipcMain.handle('get-players', async () => {
     }
 });
 
-ipcMain.handle('get-questions', async () => {
+ipcMain.handle('get-questions', async (event, questionNumber) => {
     const connection = await dba;
     try {
-        const [rows, fields] = await connection.execute('SELECT q.question_number, q.question_text, q.points, a.answer_text FROM questions q JOIN answers a ON q.answer_id = a.id WHERE question_number = 1 AND points = 3;');
+        const [rows] = await connection.execute(
+            'SELECT q.question_number, q.question_text, q.points, a.answer_text FROM questions q JOIN answers a ON q.answer_id = a.id WHERE question_number = ? AND points = 3;',
+            [questionNumber]
+        );
         return rows;
     } catch (err) {
         console.error('Błąd podczas pobierania pytań:', err);
