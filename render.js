@@ -73,13 +73,20 @@ function showPlayers() {
 }
 
 let currentQuestionNumber = 1;
+let questionPoints = 3;
 
 // Funkcja wyświetlająca pytania
 function showQuestions() {
     // Wysyłamy zapytanie do backendu po dane pytań
-    console.log("Numer pytania w showQuestions: ", currentQuestionNumber)
-    window.electron.getQuestions(currentQuestionNumber).then(data => {
+    console.log("Numer pytania w showQuestions: ", currentQuestionNumber, questionPoints)
+    window.electron.getQuestions(currentQuestionNumber, questionPoints).then(data => {
         
+        // Sprawdzamy, czy dane nie są puste
+        if (!data || data.length === 0) {
+            console.error('Brak danych lub błąd w odpowiedzi');
+            return;  // Zatrzymujemy funkcję, nie odświeżamy tabeli
+        }
+
         // Pobieramy element <tbody> dla tabeli
         const questionBody = document.getElementById('question-body');
         questionBody.innerHTML = '';  // Czyścimy listę pytań
@@ -168,6 +175,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const buttonEasierQuestion = document.getElementById('button-easier-question');
+    if (buttonEasierQuestion) {
+        buttonEasierQuestion.addEventListener("click", () => {
+            easierQuestion();
+        });
+    }
+
+    const buttonHarderQuestion = document.getElementById('button-harder-question');
+    if (buttonHarderQuestion) {
+        buttonHarderQuestion.addEventListener("click", () => {
+            harderQuestion();
+        });
+    }
+
     const buttonReset = document.getElementById('button-reset');
     if (buttonReset) {
         buttonReset.addEventListener("click", () => {
@@ -197,20 +218,47 @@ function wrongAnwser(playerId) {
 function nextQuestion() {
     currentQuestionNumber += 1;
     console.log("Numer pytania w nextQuestion: ", currentQuestionNumber)
+    questionPoints = 3;
     showQuestions()
 }
 
 function previousQuestion() {
     if (currentQuestionNumber > 1) {
         currentQuestionNumber -= 1;
-        console.log("Numer pytania w nextQuestion: ", currentQuestionNumber)
+        console.log("Numer pytania: ", currentQuestionNumber)
     }
     else {
         console.log("Jesteś na pierwszym pytaniu")
     }
     
+    questionPoints = 3;
     showQuestions()
 }
+
+function easierQuestion() {
+    if (questionPoints > 1) {
+        questionPoints -= 1;
+        console.log("Wartość pytania w easierQuestion: ", questionPoints)
+    }
+    else {
+        console.log("Nie ma łatwiejszych pytań");
+    }
+    
+    showQuestions()
+}
+
+function harderQuestion() {
+    if (questionPoints < 3) {
+        questionPoints += 1;
+        console.log("Wartość pytania w easierQuestion: ", questionPoints)
+    }
+    else {
+        console.log("Nie ma trudniejszych pytań");
+    }
+    
+    showQuestions()
+}
+
 
 function reset() {
     currentQuestionNumber = 1;
