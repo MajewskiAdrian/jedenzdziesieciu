@@ -1,6 +1,10 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const mysql = require('mysql2/promise');
 const path = require('path');
+const fs = require('fs');
+const xml2js = require('xml2js');
+
+
 
 // Tworzymy okno aplikacji
 let win;
@@ -124,3 +128,59 @@ app.on('activate', () => {
 
 
 
+ipcMain.handle('import-xml', async () => {
+    const { filePaths } = await dialog.showOpenDialog({
+        filters: [{ name: 'XML Files', extensions: ['xml'] }],
+        properties: ['openFile']
+    });
+
+    if (filePaths.length === 0) return { success: false, message: "Nie wybrano pliku!" };
+
+    const fileContent = fs.readFileSync(filePaths[0], 'utf-8');
+    const parser = new xml2js.Parser({ explicitArray: false });
+
+    try {
+        const data = await parser.parseStringPromise(fileContent);
+
+        if (!data.pma_xml_export || !data.pma_xml_export.database || !data.pma_xml_export.database.table) {
+            throw new Error("Niepoprawna struktura XML!");
+        }
+
+        const questions = data.pma_xml_export.database.table;
+        const connection = await dba;
+
+        await connection.beginTransaction();
+
+        for (const q of questions) {
+            if (q.$.name !== "questions") continue; // Pomija inne tabele
+
+            const questionNumber = q.column.find(col => col.$.name === "question_number")?._;
+            const questionText = q.column.find(col => col.$.name === "question_text")?._;
+            const points = q.column.find(col => col.$.name === "points")?._;
+            const answerId = q.column.find(col => col.$.name === "answer_id")?._;
+
+            if (!questionNumber || !questionText || !points) {
+                console.warn("Pominięto pytanie z powodu brakujących danych.");
+                continue;
+            }
+
+            console.log(`Dodaję pytanie: ${questionText}, Numer: ${questionNumber}, Punkty: ${points}`);
+
+            await connection.execute(
+                "INSERT INTO questions (question_number, question_text, points, answer_id) VALUES (?, ?, ?, ?)", 
+                [questionNumber, questionText, points, answerId || null]
+            );
+        }
+
+        await connection.commit();
+        console.log("Import zakończony sukcesem!");
+
+        return { success: true, message: "Import zakończony sukcesem!" };
+
+    } catch (err) {
+        console.error("Błąd importu XML:", err);
+        const connection = await dba;
+        await connection.rollback();
+        return { success: false, message: "Błąd importu XML!" };
+    }
+});
