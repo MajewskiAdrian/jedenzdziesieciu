@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const mysql = require('mysql2/promise');
 const path = require('path');
 
@@ -124,3 +124,65 @@ app.on('activate', () => {
 
 
 
+
+ipcMain.handle('import-xml', async () => {
+    const { filePaths } = await dialog.showOpenDialog({
+        filters: [{ name: 'XML Files', extensions: ['xml'] }],
+        properties: ['openFile']
+    });
+
+    if (filePaths.length === 0) return { success: false, message: "Nie wybrano pliku!" };
+
+    const fileContent = fs.readFileSync(filePaths[0], 'utf-8');
+    const parser = new xml2js.Parser();
+
+    try {
+        const data = await parser.parseStringPromise(fileContent);
+
+        if (!data.questions || !data.questions.question) {
+            throw new Error("Niepoprawna struktura XML!");
+        }
+
+        const questions = data.questions.question;
+        const connection = await dba;
+
+        await connection.beginTransaction();
+
+        for (const q of questions) {
+            const questionText = q.text[0];
+            const category = q.category ? q.category[0] : "Inne";
+
+            console.log(`Dodaję pytanie: ${questionText}, kategoria: ${category}`);
+
+            const [questionResult] = await connection.execute(
+                "INSERT INTO questions (question_text, category) VALUES (?, ?)", 
+                [questionText, category]
+            );
+
+            const questionId = questionResult.insertId;
+
+            for (const a of q.answers[0].answer) {
+                const answerText = a._;
+                const isCorrect = a.$.correct === "true" ? 1 : 0;
+
+                console.log(`Dodaję odpowiedź: ${answerText}, poprawna: ${isCorrect}`);
+
+                await connection.execute(
+                    "INSERT INTO answers (question_id, answer_text, is_correct) VALUES (?, ?, ?)", 
+                    [questionId, answerText, isCorrect]
+                );
+            }
+        }
+
+        await connection.commit();
+        console.log("Import zakończony sukcesem!");
+
+        return { success: true, message: "Import zakończony sukcesem!" };
+
+    } catch (err) {
+        console.error("Błąd importu XML:", err);
+        const connection = await dba;
+        await connection.rollback();
+        return { success: false, message: "Błąd importu XML!" };
+    }
+});

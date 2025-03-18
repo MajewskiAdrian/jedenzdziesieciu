@@ -268,3 +268,28 @@ function reset() {
         .then(() => showQuestions()) // odświeżamy pytanie
         .catch(error => console.error('Błąd', error));
 }
+
+console.log("Render.js działa!"); // Sprawdzamy, czy plik się ładuje
+
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("🌍 DOM załadowany!");
+    
+    const importButton = document.getElementById("importButton");
+
+    if (!importButton) {
+        console.error("Nie znaleziono guzika o ID 'importButton'!");
+        return;
+    }
+
+    console.log("✅ Znaleziono guzik!");
+
+    importButton.addEventListener("click", async () => {
+        console.log(" Kliknięto guzik!");
+
+        const result = await window.electron.importXML();
+        
+        console.log("Wynik importu:", result);
+        
+        alert(result.message);
+    });
+});
