@@ -269,7 +269,7 @@ function reset() {
         .catch(error => console.error('Błąd', error));
 }
 
-console.log("Render.js działa!"); // Sprawdzamy, czy plik się ładuje
+
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("🌍 DOM załadowany!");
