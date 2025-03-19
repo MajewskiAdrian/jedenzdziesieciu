@@ -10,10 +10,10 @@ const xml2js = require('xml2js');
 let win;
 
 const dba = mysql.createConnection({
-    host: 'localhost', // Adres hosta (np. '127.0.0.1' lub 'localhost')
-    user: 'root',      // Użytkownik MySQL
-    password: '',      // Hasło do bazy (pozostaw pusty string, jeśli brak hasła)
-    database: '1z10' // Nazwa bazy danych
+    host: 'localhost', 
+    user: 'root',    
+    password: '',     
+    database: '1z10'
 });
 
 ipcMain.handle('get-players', async () => {
@@ -29,10 +29,9 @@ ipcMain.handle('get-players', async () => {
 
 ipcMain.handle('get-questions', async (event, questionNumber, questionPoints) => {
     const connection = await dba;
-    console.log("Wartość przed SQL: ", questionPoints)
     try {
         const [rows] = await connection.execute(
-            'SELECT q.question_number, q.question_text, q.points, a.answer_text FROM questions q JOIN answers a ON q.answer_id = a.id WHERE question_number = ? AND points = ?;',
+            'SELECT q.question_number, q.question_text, q.points, a.answer_text FROM questions q JOIN answers a ON q.answer_id = a.id WHERE question_number = ? AND points = ? LIMIT 1;',
             [questionNumber, questionPoints],
         );
         return rows;

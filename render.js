@@ -133,7 +133,7 @@ function showQuestions() {
 document.addEventListener('DOMContentLoaded', () => {
     showPlayers(); // Wczytanie graczy
     showQuestions(); // Wczytanie pytań
-
+    
     const buttonCorrect = document.getElementById('button-correct');
     if (buttonCorrect) {
         buttonCorrect.addEventListener("click", () => {
