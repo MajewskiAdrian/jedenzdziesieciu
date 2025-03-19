@@ -46,8 +46,16 @@ h1 {
 }
 
 .player-container.selected {
-    background-color: #003A7A;  /* Zmiana koloru tła, kiedy radio jest zaznaczone */
+    background-color: #003A7A;  
     box-shadow: 0px 0px 30px 0px #d0d0d0;
+}
+
+.player-container.eliminated {
+    height: 129px;
+    background-color: #001e3d80;  
+    box-shadow: 0px 0px 30px 0px #00000080 inset;
+    cursor: default;
+    opacity: 0.5;
 }
 
 .player-container div {
@@ -65,6 +73,8 @@ h1 {
     margin-left: 5px;
     margin-right: 5px;
     justify-content: center;
+    position: relative;
+    margin-top: 0;
 }
 
 .chances-container {
