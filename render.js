@@ -9,6 +9,9 @@ function showPlayers() {
         data.forEach(player => {
             const playerContainer = document.createElement('div');
             playerContainer.classList.add('player-container'); // dodanie klasy do kontenera
+            if (player.chances < 1) {
+                playerContainer.classList.add('eliminated');
+            }
 
             // Kontener dla szans, wyświetlanych w jednym rzędzie
             const chancesContainer = document.createElement('div');
@@ -45,23 +48,26 @@ function showPlayers() {
 
             // Dodajemy zdarzenie kliknięcia na player-container
             playerContainer.addEventListener('click', () => {
-                // Odznaczamy wszystkie inne radiobuttony
-                const allRadios = document.querySelectorAll('input[name="playerSelection"]');
-                allRadios.forEach(radio => {
-                    radio.checked = false;  // Odznaczamy inne radio
-                });
+                if (player.chances > 0) {
+                    // Odznaczamy wszystkie inne radiobuttony
+                    const allRadios = document.querySelectorAll('input[name="playerSelection"]');
+                    allRadios.forEach(radio => {
+                        radio.checked = false;  // Odznaczamy inne radio
+                    });
 
-                // Zaznaczamy bieżący radiobutton
-                playerRadio.checked = true;
+                    // Zaznaczamy bieżący radiobutton
+                    playerRadio.checked = true;
 
-                // Dodajemy lub usuwamy klasę .selected
-                const allContainers = document.querySelectorAll('.player-container');
-                allContainers.forEach(container => {
-                    container.classList.remove('selected');  // Usuwamy klasę z innych kontenerów
-                });
+                    // Dodajemy lub usuwamy klasę .selected
+                    const allContainers = document.querySelectorAll('.player-container');
+                    allContainers.forEach(container => {
+                        container.classList.remove('selected');  // Usuwamy klasę z innych kontenerów
+                    });
 
-                // Dodajemy klasę .selected do klikniętego kontenera
-                playerContainer.classList.add('selected');
+                    // Dodajemy klasę .selected do klikniętego kontenera
+                    playerContainer.classList.add('selected');
+                }
+
             });
 
             // Dodajemy kontener gracza (z szansami, nazwą, ID i przyciskiem) do głównej listy
@@ -80,11 +86,11 @@ function showQuestions() {
     // Wysyłamy zapytanie do backendu po dane pytań
     console.log("Numer pytania w showQuestions: ", currentQuestionNumber, questionPoints)
     window.electron.getQuestions(currentQuestionNumber, questionPoints).then(data => {
-        
+
         // Sprawdzamy, czy dane nie są puste
         if (!data || data.length === 0) {
             if (questionPoints == 1)
-            questionPoints += 1;
+                questionPoints += 1;
             console.error('Brak danych lub błąd w odpowiedzi');
             return;  // Zatrzymujemy funkcję, nie odświeżamy tabeli
         }
@@ -133,7 +139,7 @@ function showQuestions() {
 document.addEventListener('DOMContentLoaded', () => {
     showPlayers(); // Wczytanie graczy
     showQuestions(); // Wczytanie pytań
-    
+
     const buttonCorrect = document.getElementById('button-correct');
     if (buttonCorrect) {
         buttonCorrect.addEventListener("click", () => {
@@ -231,7 +237,7 @@ function previousQuestion() {
     else {
         console.log("Jesteś na pierwszym pytaniu")
     }
-    
+
     questionPoints = 3;
     showQuestions()
 }
@@ -244,7 +250,7 @@ function easierQuestion() {
     else {
         console.log("Nie ma łatwiejszych pytań");
     }
-    
+
     showQuestions()
 }
 
@@ -256,7 +262,7 @@ function harderQuestion() {
     else {
         console.log("Nie ma trudniejszych pytań");
     }
-    
+
     showQuestions()
 }
 
@@ -273,7 +279,7 @@ function reset() {
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("🌍 DOM załadowany!");
-    
+
     const importButton = document.getElementById("importButton");
 
     if (!importButton) {
@@ -287,9 +293,9 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log(" Kliknięto guzik!");
 
         const result = await window.electron.importXML();
-        
+
         console.log("Wynik importu:", result);
-        
+
         alert(result.message);
     });
 });
