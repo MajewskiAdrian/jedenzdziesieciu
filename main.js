@@ -3,17 +3,45 @@ const mysql = require('mysql2/promise');
 const path = require('path');
 const fs = require('fs');
 const xml2js = require('xml2js');
-
-
+const WebSocket = require('ws'); // Import WebSocket library
 
 // Tworzymy okno aplikacji
 let win;
 
 const dba = mysql.createConnection({
-    host: 'localhost', 
-    user: 'root',    
-    password: '',     
+    host: 'localhost',
+    user: 'root',
+    password: '',
     database: '1z10'
+});
+
+// Create WebSocket server
+const wss = new WebSocket.Server({ port: 8080 });
+
+wss.on('connection', (ws) => {
+    console.log('WebSocket client connected.');
+
+    // Send participant data when requested
+    ws.on('message', async (message) => {
+        const messageStr = message.toString(); // Convert Buffer to string
+        console.log('Received message:', messageStr); // Debugging statement
+
+        if (messageStr === 'getParticipants') {
+            try {
+                const connection = await dba;
+                const [rows] = await connection.query('SELECT name, score, chances FROM players');
+                console.log('Fetched participants:', rows); // Debugging statement
+                ws.send(JSON.stringify(rows)); // Send participant data as JSON
+            } catch (err) {
+                console.error('Error fetching participants:', err);
+                ws.send(JSON.stringify({ error: 'Failed to fetch participants' }));
+            }
+        }
+    });
+
+    ws.on('close', () => {
+        console.log('WebSocket client disconnected.');
+    });
 });
 
 ipcMain.handle('get-players', async () => {
@@ -125,8 +153,6 @@ app.on('activate', () => {
     }
 });
 
-
-
 ipcMain.handle('import-xml', async () => {
     const { filePaths } = await dialog.showOpenDialog({
         filters: [{ name: 'XML Files', extensions: ['xml'] }],
@@ -166,7 +192,7 @@ ipcMain.handle('import-xml', async () => {
             console.log(`Dodaję pytanie: ${questionText}, Numer: ${questionNumber}, Punkty: ${points}`);
 
             await connection.execute(
-                "INSERT INTO questions (question_number, question_text, points, answer_id) VALUES (?, ?, ?, ?)", 
+                "INSERT INTO questions (question_number, question_text, points, answer_id) VALUES (?, ?, ?, ?)",
                 [questionNumber, questionText, points, answerId || null]
             );
         }
