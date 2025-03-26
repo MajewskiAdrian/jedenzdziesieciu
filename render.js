@@ -72,43 +72,23 @@ function showPlayers() {
     });
 }
 
-// Funkcja wyświetlająca pytania
-function showQuestions2() {
-    // Wysyłamy zapytanie do backendu po dane pytań
-    window.electron.getQuestions().then(data => {
-        const questionBar = document.getElementById('question-bar');
-        questionBar.innerHTML = '';  // Czyścimy listę
-
-        // Iterujemy przez dane i tworzymy elementy do wyświetlenia
-        data.forEach(question => {
-            const questionContainer = document.createElement('div');
-            questionContainer.classList.add('question-container'); // dodanie klasy do kontenera
-
-            // Div dla numeru pytania
-            const questionNumberDiv = document.createElement('div');
-            questionNumberDiv.textContent = question.question_number;
-            questionNumberDiv.classList.add('question-number');
-            questionContainer.appendChild(questionNumberDiv);  // Dodajemy do kontenera
-
-            // Div dla treści pytania
-            const questionTextDiv = document.createElement('div');
-            questionTextDiv.textContent = question.question_text;
-            questionTextDiv.classList.add('question-text');
-            questionContainer.appendChild(questionTextDiv);  // Dodajemy do kontenera
-
-            // Dodajemy kontener pytań
-            questionBar.appendChild(questionContainer);
-        });
-    }).catch(error => {
-        console.error('Błąd:', error);
-    });
-}
+let currentQuestionNumber = 1;
+let questionPoints = 3;
 
 // Funkcja wyświetlająca pytania
 function showQuestions() {
     // Wysyłamy zapytanie do backendu po dane pytań
-    window.electron.getQuestions().then(data => {
+    console.log("Numer pytania w showQuestions: ", currentQuestionNumber, questionPoints)
+    window.electron.getQuestions(currentQuestionNumber, questionPoints).then(data => {
         
+        // Sprawdzamy, czy dane nie są puste
+        if (!data || data.length === 0) {
+            if (questionPoints == 1)
+            questionPoints += 1;
+            console.error('Brak danych lub błąd w odpowiedzi');
+            return;  // Zatrzymujemy funkcję, nie odświeżamy tabeli
+        }
+
         // Pobieramy element <tbody> dla tabeli
         const questionBody = document.getElementById('question-body');
         questionBody.innerHTML = '';  // Czyścimy listę pytań
@@ -116,6 +96,8 @@ function showQuestions() {
         // Iterujemy przez dane i tworzymy wiersze tabeli
         data.forEach(question => {
             console.log("Dodaję pytanie:", question); // Debugowanie
+
+            currentQuestionNumber = question.question_number;
 
             const questionRow = document.createElement('tr');
 
@@ -151,13 +133,16 @@ function showQuestions() {
 document.addEventListener('DOMContentLoaded', () => {
     showPlayers(); // Wczytanie graczy
     showQuestions(); // Wczytanie pytań
-    // Obsługa przycisku - demo!!!
+
     const buttonCorrect = document.getElementById('button-correct');
     if (buttonCorrect) {
         buttonCorrect.addEventListener("click", () => {
             const selectedPlayer = document.querySelector('input[name="playerSelection"]:checked');
+            //const questionNumber = questionNumberTd.value
             if (selectedPlayer) {
-                correctAnwser(selectedPlayer.value);  // Przekazanie ID gracza
+                correctAnwser(selectedPlayer.value, questionPoints);  // Przekazanie ID gracza
+                nextQuestion();
+                console.log("Numer pytania: ", currentQuestionNumber)
             } else {
                 console.log("Wybierz uczestnika!")
             }
@@ -171,9 +156,38 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedPlayer = document.querySelector('input[name="playerSelection"]:checked');
             if (selectedPlayer) {
                 wrongAnwser(selectedPlayer.value);  // Przekazanie ID gracza
+                nextQuestion();
             } else {
                 console.log("Wybierz uczestnika!")
             }
+        });
+    }
+
+    const buttonNextQuestion = document.getElementById('button-next-question');
+    if (buttonNextQuestion) {
+        buttonNextQuestion.addEventListener("click", () => {
+            nextQuestion();
+        });
+    }
+
+    const buttonPreviousQuestion = document.getElementById('button-previous-question');
+    if (buttonPreviousQuestion) {
+        buttonPreviousQuestion.addEventListener("click", () => {
+            previousQuestion();
+        });
+    }
+
+    const buttonEasierQuestion = document.getElementById('button-easier-question');
+    if (buttonEasierQuestion) {
+        buttonEasierQuestion.addEventListener("click", () => {
+            easierQuestion();
+        });
+    }
+
+    const buttonHarderQuestion = document.getElementById('button-harder-question');
+    if (buttonHarderQuestion) {
+        buttonHarderQuestion.addEventListener("click", () => {
+            harderQuestion();
         });
     }
 
@@ -188,21 +202,69 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Funkcja po poprawnej odpowiedzi
 function correctAnwser(playerId) {
-    let pointsNumber = 10;
+    let pointsNumber = questionPoints;
     window.electron.correctAnwser(playerId, pointsNumber) // dodajemy punkty
-        .then(() => showPlayers()) // odświeżamy listę
+        .then(() => showPlayers()) // odświeżamy listę uczestników
+        .then(() => showQuestions()) // odświeżamy pytanie
         .catch(error => console.error('Błąd', error));
 }
 
 function wrongAnwser(playerId) {
-    let pointsNumber = 1;
-    window.electron.wrongAnwser(playerId, pointsNumber) // dodajemy punkty
+    window.electron.wrongAnwser(playerId, 1) // odejmujemy szanse
         .then(() => showPlayers()) // odświeżamy listę
+        .then(() => showQuestions()) // odświeżamy pytanie
         .catch(error => console.error('Błąd', error));
 }
 
+function nextQuestion() {
+    currentQuestionNumber += 1;
+    console.log("Numer pytania w nextQuestion: ", currentQuestionNumber)
+    questionPoints = 3;
+    showQuestions()
+}
+
+function previousQuestion() {
+    if (currentQuestionNumber > 1) {
+        currentQuestionNumber -= 1;
+        console.log("Numer pytania: ", currentQuestionNumber)
+    }
+    else {
+        console.log("Jesteś na pierwszym pytaniu")
+    }
+    
+    questionPoints = 3;
+    showQuestions()
+}
+
+function easierQuestion() {
+    if (questionPoints > 1) {
+        questionPoints -= 1;
+        console.log("Wartość pytania w easierQuestion: ", questionPoints)
+    }
+    else {
+        console.log("Nie ma łatwiejszych pytań");
+    }
+    
+    showQuestions()
+}
+
+function harderQuestion() {
+    if (questionPoints < 3) {
+        questionPoints += 1;
+        console.log("Wartość pytania w easierQuestion: ", questionPoints)
+    }
+    else {
+        console.log("Nie ma trudniejszych pytań");
+    }
+    
+    showQuestions()
+}
+
+
 function reset() {
+    currentQuestionNumber = 1;
     window.electron.reset()
         .then(() => showPlayers())
+        .then(() => showQuestions()) // odświeżamy pytanie
         .catch(error => console.error('Błąd', error));
 }
