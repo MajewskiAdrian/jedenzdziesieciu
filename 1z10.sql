@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 01, 2025 at 11:01 PM
+-- Generation Time: Mar 27, 2025 at 10:09 PM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -78,16 +78,16 @@ CREATE TABLE `players` (
 --
 
 INSERT INTO `players` (`id`, `name`, `chances`, `score`) VALUES
-(1, 'Artur', 3, 0),
-(2, 'Jan', 3, 0),
-(3, 'Katarzyna', 3, 0),
-(4, 'Marcin', 3, 0),
-(5, 'Gerald', 3, 0),
-(6, 'Kamil', 3, 0),
-(7, 'Nikodem', 3, 0),
-(8, 'Leon', 3, 0),
-(9, 'Jakub', 3, 0),
-(10, 'Jarek', 3, 0);
+(1, 'UCZESTNIK 1', 3, 0),
+(2, 'UCZESTNIK 2', 3, 0),
+(3, 'UCZESTNIK 3', 3, 0),
+(4, 'UCZESTNIK 4', 3, 0),
+(5, 'UCZESTNIK 5', 3, 0),
+(6, 'UCZESTNIK 6', 3, 0),
+(7, 'UCZESTNIK 7', 3, 0),
+(8, 'UCZESTNIK 8', 3, 0),
+(9, 'UCZESTNIK 9', 3, 0),
+(10, 'UCZESTNIK 10', 3, 0);
 
 -- --------------------------------------------------------
 
