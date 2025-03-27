@@ -19,5 +19,3 @@ Thumbs.db
 
 # Ignorowanie plików konfiguracyjnych środowiska
 .env
-
-.drawio
