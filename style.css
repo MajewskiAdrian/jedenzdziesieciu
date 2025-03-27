@@ -97,15 +97,91 @@ h1 {
 }
 
 #question-bar {
-    width: 95%;
     display: flex;
-    flex-direction: row;
-    margin-left: auto;
-    margin-right: auto;
+    justify-content: center;
+    align-items: center;
 }
 
 .question-container {
     width: 100%;
     display: flex;
     flex-direction: row;
+}
+
+table {
+    width: 80%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+    background: #242323;  
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    color: #ddd;
+}
+
+thead {
+    background: #333;
+    color: #fff;
+}
+
+th, td {
+    padding: 12px 15px;
+}
+
+th {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+tbody tr:hover {
+    background: #383838;
+    cursor: pointer;
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#button-correct {
+    background: #28a745; /* Zielony kolor dla poprawnej odpowiedzi */
+    color: white;
+}
+
+#button-correct:hover {
+    background: #218838; /* Ciemniejszy odcień na hover */
+}
+
+#button-wrong {
+    background: #dc3545; /* Czerwony kolor dla błędnej odpowiedzi */
+    color: white;
+}
+
+#button-wrong:hover {
+    background: #c82333; /* Ciemniejszy odcień na hover */
+}
+
+#button-next-question, #button-previous-question {
+    background: #007bff; /* Niebieski kolor */
+    color: white;
+}
+
+#button-next-question:hover, #button-previous-question:hover {
+    background: #0056b3; /* Ciemniejszy odcień na hover */
+}
+
+#button-harder-question, #button-easier-question {
+    background: #d39e00; /* Złoty kolor dla wyboru pytania */
+    color: white;
+}
+
+#button-harder-question:hover, #button-easier-question:hover  {
+    background: #b38600; /* Ciemniejszy odcień na hover */
 }
