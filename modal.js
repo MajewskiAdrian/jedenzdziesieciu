@@ -50,20 +50,14 @@ function updateParticipantFields() {
     const pointsInput = document.getElementById('edit-points');
     const livesInput = document.getElementById('edit-lives');
 
-    // Usuwamy i ponownie tworzymy pole tekstowe, żeby się "odmroziło"
-    const newNameInput = nameInput.cloneNode(true);
-    nameInput.parentNode.replaceChild(newNameInput, nameInput);
-
-    // Uzupełniamy nowo stworzone pole danymi
-    newNameInput.value = selectedParticipant.name;
+    // Clear and update input fields
+    nameInput.value = '';
     pointsInput.value = selectedParticipant.score;
     livesInput.value = selectedParticipant.chances;
 
-    // Ustawiamy fokus na nowym polu
-    newNameInput.focus();
+    // Set focus on the name input field
+    nameInput.focus();
 }
-
-
 
 function closeModal() {
     document.getElementById('edit-modal').style.display = 'none';
@@ -78,22 +72,22 @@ async function saveChanges() {
     const newLives = document.getElementById('edit-lives').value;
 
     if (newLives > 3) {
-        alert('Maksymalna liczba żyć to 3.');
+        console.error('Maksymalna liczba żyć to 3.');
         return;
     }
 
     if (newLives < 0) {
-        alert('Liczba żyć nie może być ujemna.');
+        console.error('Liczba żyć nie może być ujemna.');
         return;
     }
 
     const response = await window.electron.updateParticipant({ participant, newName, newPoints, newLives });
 
     if (response.success) {
-        alert('Dane zaktualizowane!');
+        console.log('Dane zaktualizowane!');
         closeModal();
         location.reload();
     } else {
-        alert('Błąd aktualizacji');
+        console.error('Błąd aktualizacji');
     }
 }
