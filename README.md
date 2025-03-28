@@ -1,3 +1,22 @@
+# Funkcjonalności
+
+-**Panel edycji uczestników**:
+możliwosć edycji ilości punktów i żyć uczestników.
+-**Dodawanie pytań**:
+implementacja pytań do bazy danych przez plik xml.
+-**Łatwy w użytkowaniu interfejs**:
+obsługa poprawności odpowiedzi.
+-**Wysyłanie danych poprzez websocket**.
+
+# Technologie
+
+**-Electron**
+**-Baza MySQL**
+**-Websocket**
+
+Aplikacja przeznaczona do zarządzania grą "1 z 10".
+
+
 # Instalacja aplikacji
 
 Aby uruchomić aplikację, wykonaj poniższe kroki.
@@ -31,3 +50,10 @@ Aby uruchomić aplikację, wykonaj poniższe kroki.
 5. **Uruchom aplikację**
    - Po zainstalowaniu zależności uruchom aplikację Electron:
      npm start
+
+# Wymagania 
+
+**-node.js**
+**xampp**
+**electron**
+**MySQL**
