@@ -53,7 +53,7 @@ Aby uruchomić aplikację, wykonaj poniższe kroki.
 
 # Wymagania 
 
-**-node.js**
-**xampp**
-**electron**
-**MySQL**
+**- node.js**
+**- xampp**
+**- electron**
+**- MySQL**
