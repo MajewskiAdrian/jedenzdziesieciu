@@ -8,10 +8,11 @@ możliwosć edycji ilości punktów i szans uczestników.
 - **Dodawanie pytań**:
 implementacja pytań do bazy danych przez plik xml.
 
-- **Łatwy w użytkowaniu interfejs**:
-obsługa poprawności odpowiedzi.
+- **Łatwy w użytkowaniu interfejs**
 
-- **Wysyłanie danych poprzez websocket**.
+- **Obsługa poprawności odpowiedzi**
+
+- **Wysyłanie danych poprzez websocket**
 
 ## Technologie
 
