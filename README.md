@@ -1,27 +1,27 @@
-# Funkcjonalności
+# Aplikacja przeznaczona do zarządzania grą "1 z 10".
 
--**Panel edycji uczestników**:
-możliwosć edycji ilości punktów i żyć uczestników.
--**Dodawanie pytań**:
+## Funkcjonalności
+
+**Panel edycji uczestników**:
+możliwosć edycji ilości punktów i szans uczestników.
+**Dodawanie pytań**:
 implementacja pytań do bazy danych przez plik xml.
--**Łatwy w użytkowaniu interfejs**:
+**Łatwy w użytkowaniu interfejs**:
 obsługa poprawności odpowiedzi.
--**Wysyłanie danych poprzez websocket**.
+**Wysyłanie danych poprzez websocket**.
 
-# Technologie
+## Technologie
 
-**-Electron**
-**-Baza MySQL**
-**-Websocket**
+- **Electron**
+- **node.js**
+- **Baza MySQL**
+- **Websocket**
 
-Aplikacja przeznaczona do zarządzania grą "1 z 10".
-
-
-# Instalacja aplikacji
+## Instalacja aplikacji
 
 Aby uruchomić aplikację, wykonaj poniższe kroki.
 
-## 🔧 Kroki instalacji
+### 🔧 Kroki instalacji
 
 1. **Zaimportuj bazę danych**
    - Zaimportuj plik `1z10.sql` do bazy danych MySQL o nazwie **`1z10`**.
@@ -51,9 +51,8 @@ Aby uruchomić aplikację, wykonaj poniższe kroki.
    - Po zainstalowaniu zależności uruchom aplikację Electron:
      npm start
 
-# Wymagania 
+## Wymagania 
 
-**- node.js**
-**- xampp**
-**- electron**
-**- MySQL**
+   - **node.js**
+   - **xampp**
+   - **electron**
