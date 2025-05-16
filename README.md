@@ -2,13 +2,16 @@
 
 ## Funkcjonalności
 
-**Panel edycji uczestników**:
+- **Panel edycji uczestników**:
 możliwosć edycji ilości punktów i szans uczestników.
-**Dodawanie pytań**:
+
+- **Dodawanie pytań**:
 implementacja pytań do bazy danych przez plik xml.
-**Łatwy w użytkowaniu interfejs**:
+
+- **Łatwy w użytkowaniu interfejs**:
 obsługa poprawności odpowiedzi.
-**Wysyłanie danych poprzez websocket**.
+
+- **Wysyłanie danych poprzez websocket**.
 
 ## Technologie
 
